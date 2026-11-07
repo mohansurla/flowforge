@@ -6,10 +6,15 @@ dotenv.config({
     override: true,
 });
 
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is missing from .env.test");
+}
 
 
 const databaseName = new URL(
-    process.env.DATABASE_URL!
+    databaseUrl!
   ).pathname.slice(1);
 
 if (databaseName !== "flowforge_test") {

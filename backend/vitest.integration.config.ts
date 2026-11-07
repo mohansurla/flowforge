@@ -1,0 +1,11 @@
+//integration tests, loads .env.test and connects Prisma.
+
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    include: ["tests/integration/**/*.test.ts"],
+    setupFiles: ["./tests/setup.ts"],
+    testTimeout: 10000,
+  },
+});

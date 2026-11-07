@@ -1,7 +1,22 @@
-.env
+# IDE and editor settings
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Dependencies
 node_modules/
+
+# Build output and coverage
 dist/
-.env.*
-!.env.example	
 coverage/
-/generated/prisma
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Generated Prisma client
+generated/prisma/

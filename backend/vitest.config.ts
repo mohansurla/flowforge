@@ -1,9 +1,9 @@
+//unit tests, no database connection.
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    setupFiles: ["./tests/setup.ts"],
-    testTimeout: 10000,
+    include: ["tests/unit/**/*.test.ts"],
   },
 });
 

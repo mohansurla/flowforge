@@ -4,9 +4,10 @@
   "description": "",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc ",
     "start": "node dist/server.js",
     "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
@@ -31,5 +32,10 @@
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.10.1": true,
+    "esbuild@0.28.2": true,
+    "prisma@7.10.1": true
   }
 }
