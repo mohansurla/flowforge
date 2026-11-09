@@ -70,12 +70,13 @@ describe("Organization API Integration Tests", () => {
         };
         // Create the first organization
         const firstOrgResponse = await request(app).post("/api/v1/organizations").send(payload);
+        organizationId = firstOrgResponse.body.data.organization.id;
         expect(firstOrgResponse.status).toBe(201);
         
 
         // Try to create another organization with the same slug
         const response = await request(app).post("/api/v1/organizations").send(payload);
-        organizationId = firstOrgResponse.body.data.organization.id;
+        
         expect(response.status).toBe(409);
         expect(response.body.success).toBe(false);
         expect(response.body.message).toBe("A resource with the provided unique value already exists.");
@@ -101,10 +102,10 @@ describe("Organization API Integration Tests", () => {
             await prisma.user.delete({ where: { id: testUserId } });
         }
         }finally {
-            if(originalDevUserId){
-                process.env.DEV_USER_ID = originalDevUserId;
-            }else{
+            if(originalDevUserId===undefined){
                 delete process.env.DEV_USER_ID;
+            }else{
+                process.env.DEV_USER_ID = originalDevUserId;
             }
             testUserId = undefined;
             organizationId = undefined;
