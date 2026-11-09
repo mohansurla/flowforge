@@ -47,20 +47,18 @@ describe("Organization API Integration Tests", () => {
     it("should return 400 for invalid request", async () => {
         const payload = {
             name: "A", // Invalid name
-            slug: "Invalid Slug", // Invalid slug
+            slug: crypto.randomUUID(),
         };
-        await prisma.organization.count().then(count=>{
-            expect(count).toBe(0);//organization count before request
-        });
+        const organizationCount = await prisma.organization.count({ where: { slug: payload.slug } });
+        expect(organizationCount).toBe(0);//no organization with this slug before request
         const response = await request(app).post("/api/v1/organizations").send(payload);
         expect(response.status).toBe(400);
         expect(response.body.success).toBe(false);
         expect(response.body.message).toBe("Bad Request");
         expect(Array.isArray(response.body.errors)).toBe(true);
         expect(response.body.errors.length).toBeGreaterThan(0);
-        await prisma.organization.count().then(count=>{
-            expect(count).toBe(0);//organization count after request
-        });
+        const organizationCountAfter = await prisma.organization.count({ where: { slug: payload.slug } });
+        expect(organizationCountAfter).toBe(0);//no organization with this slug after request
     });
 
     //duplicate slug test
@@ -119,16 +117,22 @@ describe("Organization API Integration Tests - DEV_USER_ID missing", () => {
     it("should return 500 if DEV_USER_ID is missing", async () => {
         const originalDevUserId = process.env.DEV_USER_ID;
         delete process.env.DEV_USER_ID;
-        const payload = {
-            name: "Test Organization",
-            slug: crypto.randomUUID(),
-            description: "This is a test organization"
-        };
-        const response = await request(app).post("/api/v1/organizations").send(payload);
-        expect(response.status).toBe(500);
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe("UserID not found");
-        // Restore the original DEV_USER_ID
-        process.env.DEV_USER_ID = originalDevUserId;
+        try {
+            const payload = {
+                name: "Test Organization",
+                slug: crypto.randomUUID(),
+                description: "This is a test organization"
+            };
+            const response = await request(app).post("/api/v1/organizations").send(payload);
+            expect(response.status).toBe(500);
+            expect(response.body.success).toBe(false);
+            expect(response.body.message).toBe("UserID not found");
+        } finally {
+            if (originalDevUserId === undefined) {
+                delete process.env.DEV_USER_ID;
+            } else {
+                process.env.DEV_USER_ID = originalDevUserId;
+            }
+        }
     });
 });

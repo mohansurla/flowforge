@@ -1,6 +1,5 @@
-import error,{ type NextFunction, type Request, type Response, type RequestHandler
- } from "express";
-import { ZodType } from "zod";
+import type { NextFunction,Request,Response,RequestHandler } from "express";
+import type { ZodType } from "zod";
 
 export function validateRequest(schema: ZodType): RequestHandler {
     return (
